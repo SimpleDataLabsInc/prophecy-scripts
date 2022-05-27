@@ -176,6 +176,8 @@ fi
 
 
 # retry helm upgrade -i -n cp athena ./athena-0.1.0.tgz --set athena.tag=0.14.7 --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set prophecy.rootUrl=`echo prophecy.${ROOT_URL}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --force
+# Set athena envs like below - 
+# --set "athena.envs={INSTALL_PROPHECY=true,IMAGE_REGISTRY=gcr.io/prophecy-share,CONTROLCENTER_URL=https://dev-controlcenter.prophecy.io}"
 retry helm upgrade -i prophecy --namespace prophecy prophecy/prophecy-marketplace --version 0.1.7 --set customer.name=`echo ${CUSTOMER_NAME}` --set serviceAccount.create=true --set cloud.provider=AZURE --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set prophecy.rootUrl=`echo ${ROOT_URL}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret
 retry helm upgrade -i -n prophecy backup ./prophecy-backup-0.0.1.tgz --set backup.pvc.create=true --force
 
