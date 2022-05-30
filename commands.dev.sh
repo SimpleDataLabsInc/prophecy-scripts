@@ -140,7 +140,7 @@ retry helm repo update
 # Installing metrics-server
 retry kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.6.0/components.yaml
 
-retry helm upgrade -i loki grafana/loki-stack -n prophecy --create-namespace --set prometheus.isDefault=false --set loki.persistence.enabled=true,loki.persistence.storageClassName=default,loki.persistence.size=200Gi --force
+retry helm upgrade -i loki grafana/loki-stack -n prophecy --create-namespace --set loki.isDefault=false --set loki.persistence.enabled=true,loki.persistence.storageClassName=default,loki.persistence.size=200Gi --force
 
 if [ ${USE_CUSTOMER_PROVIDED_CERTIFICATE} == "True" ]; then
   kubectl create secret tls prophecy-wildcard-tls-secret -n cp --cert=tls.crt --key=tls.key
