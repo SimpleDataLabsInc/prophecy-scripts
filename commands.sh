@@ -176,7 +176,7 @@ fi
 
 
 # retry helm upgrade -i -n cp athena ./athena-0.1.0.tgz --set athena.tag=0.14.7 --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set prophecy.rootUrl=`echo prophecy.${ROOT_URL}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --force
-retry helm upgrade -i prophecy --namespace prophecy prophecy/prophecy-marketplace --version 0.1.7 --set customer.name=`echo ${CUSTOMER_NAME}` --set serviceAccount.create=true --set cloud.provider=AZURE --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set prophecy.rootUrl=`echo ${ROOT_URL}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --set version=2.1.1
+retry helm upgrade -i prophecy --namespace prophecy prophecy/prophecy-marketplace --version 2.1.1 --set global.customer.name=`echo ${CUSTOMER_NAME}` --set serviceAccount.create=true --set cloud.provider=AZURE --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set global.prophecy.rootUrl=`echo ${ROOT_URL}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --set version=2.1.1
 retry helm upgrade -i -n prophecy backup ./prophecy-backup-0.0.1.tgz --set backup.pvc.create=true --force
 
 # retry helm upgrade -i -n dp backup ./prophecy-backup-0.0.1.tgz --set backup.pvc.create=true --force
