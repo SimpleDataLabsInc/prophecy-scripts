@@ -138,7 +138,7 @@ retry helm repo update
 # retry helm upgrade -i prometheus prometheus-community/kube-prometheus-stack -n platform -f /etc/marketplace/values_prometheus.yaml --force
 
 # Installing metrics-server
-retry kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.6.0/components.yaml
+# retry kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.6.0/components.yaml
 
 retry helm upgrade -i loki grafana/loki-stack -n prophecy --create-namespace --set loki.isDefault=false --set loki.persistence.enabled=true,loki.persistence.storageClassName=default,loki.persistence.size=200Gi --force
 
