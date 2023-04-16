@@ -110,10 +110,12 @@ retry helm repo update
 # # not adding retry here as create will fail on retry. cannot apply due to CRD size restriction.
 # kubectl create -f `pwd`/crds
 
-# kubectl create ns cp
-# kubectl label namespace cp owner=prophecy
-# kubectl create ns dp
-# kubectl label namespace dp owner=prophecy
+if [ ${USE_CUSTOMER_PROVIDED_CERTIFICATE} == "True" ]; then
+ kubectl create ns cp
+ kubectl label namespace cp owner=prophecy
+ kubectl create ns dp
+ kubectl label namespace dp owner=prophecy
+fi
 
 # kubectl create namespace platform
 # kubectl label namespace platform owner=prophecy
@@ -178,7 +180,7 @@ fi
 # retry helm upgrade -i -n cp athena ./athena-0.1.0.tgz --set athena.tag=0.14.7 --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set prophecy.rootUrl=`echo prophecy.${ROOT_URL}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --force
 #retry helm upgrade -i prophecy --namespace prophecy prophecy/prophecy-marketplace --version 2.1.1 --set global.customer.name=`echo ${CUSTOMER_NAME}` --set serviceAccount.create=true --set cloud.provider=AZURE --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set global.prophecy.rootUrl=`echo ${ROOT_URL}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --set version=2.2.7
 if [ ${USE_CUSTOMER_PROVIDED_CERTIFICATE} == "True" ]; then
-  retry helm upgrade -i prophecy --namespace prophecy prophecy/prophecy-marketplace --version 2.1.3 --set global.prophecy.rootUrl=`echo ${ROOT_URL}` --set platform.ingress-nginx.controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set global.customer.name=`echo ${CUSTOMER_NAME}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set serviceAccount.create=true --set cloud.provider=ONPREM  --set version=2.5.8-10 --set athena.tag=latest --set platform.wildcardCert.useExternal=false --set "athena.envs={ INSTALL_PROPHECY=true,IMAGE_REGISTRY=gcr.io/prophecy-share,DISABLE_CONTROLCENTER=false,IS_MARKETPLACE_DEPLOYMENT=true,DISABLE_METERING=false,DISABLE_AUTO_UPDATES=true,ENABLE_SIGNUP=false, DISABLE_SHARED_VOLUMES=true, CONTROLPLANE_NAMESPACE=prophecy, DATAPLANE_NAMESPACE=prophecy, ELASTICSEARCH_NAMESPACE=prophecy, WILDCARD_CERTIFICATE_NAME=prophecy-wildcard-tls-secret}"
+  retry helm upgrade -i prophecy --namespace prophecy prophecy/prophecy-marketplace --version 2.1.3 --set global.prophecy.rootUrl=`echo ${ROOT_URL}` --set platform.ingress-nginx.controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set global.customer.name=`echo ${CUSTOMER_NAME}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set serviceAccount.create=true --set cloud.provider=ONPREM  --set version=2.5.8-10 --set athena.tag=latest --set platform.wildcardCert.useExternal=true --set "athena.envs={ INSTALL_PROPHECY=true,IMAGE_REGISTRY=gcr.io/prophecy-share,DISABLE_CONTROLCENTER=false,IS_MARKETPLACE_DEPLOYMENT=true,DISABLE_METERING=false,DISABLE_AUTO_UPDATES=true,ENABLE_SIGNUP=false, DISABLE_SHARED_VOLUMES=true, CONTROLPLANE_NAMESPACE=cp, DATAPLANE_NAMESPACE=dp, ELASTICSEARCH_NAMESPACE=prophecy, WILDCARD_CERTIFICATE_NAME=prophecy-wildcard-tls-secret}"
 else
   retry helm upgrade -i prophecy --namespace prophecy prophecy/prophecy-marketplace --version 2.1.3 --set global.prophecy.rootUrl=`echo ${ROOT_URL}` --set platform.ingress-nginx.controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set global.customer.name=`echo ${CUSTOMER_NAME}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set serviceAccount.create=true --set cloud.provider=ONPREM  --set version=2.5.8-10 --set athena.tag=latest --set "athena.envs={INSTALL_PROPHECY=true,IMAGE_REGISTRY=gcr.io/prophecy-share,DISABLE_CONTROLCENTER=false,IS_MARKETPLACE_DEPLOYMENT=true,DISABLE_METERING=false,DISABLE_AUTO_UPDATES=true,ENABLE_SIGNUP=false, DISABLE_SHARED_VOLUMES=true, CONTROLPLANE_NAMESPACE=prophecy, DATAPLANE_NAMESPACE=prophecy, ELASTICSEARCH_NAMESPACE=prophecy, WILDCARD_CERTIFICATE_NAME=prophecy-wildcard-tls-secret}"
 fi
