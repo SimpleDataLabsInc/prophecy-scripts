@@ -197,7 +197,3 @@ fi
 
 # retry helm upgrade -i federator prophecy/openidfederator --version 1.16.0 -n openidfederator
 
-kubectl label servicemonitor cp-metrics -n cp release=prometheus
-
-kubectl label servicemonitor dp-metrics -n dp release=prometheus
-
