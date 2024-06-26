@@ -55,12 +55,12 @@ retry az aks get-credentials --name $CLUSTERNAME --resource-group $CLUSTERGROUP
 cd /etc/marketplace
 source secrets.sh
 
-retry helm repo add stable https://charts.helm.sh/stable
-retry helm repo add kiwigrid https://kiwigrid.github.io
-retry helm repo add elastic https://helm.elastic.co
-retry helm repo add grafana https://grafana.github.io/helm-charts
+# retry helm repo add stable https://charts.helm.sh/stable
+# retry helm repo add kiwigrid https://kiwigrid.github.io
+# retry helm repo add elastic https://helm.elastic.co
+# retry helm repo add grafana https://grafana.github.io/helm-charts
 retry helm repo add prophecy https://prophecy-chart.s3.amazonaws.com
-retry helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+# retry helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
 if [ ${USE_CUSTOMER_PROVIDED_CERTIFICATE} == "False" ]; then
   eval "echo \"$(cat azure-dns-secret-tpl.yaml)\"" > azure-dns-secret.yaml
@@ -70,7 +70,7 @@ if [ ${USE_CUSTOMER_PROVIDED_CERTIFICATE} == "False" ]; then
 fi
 
 
-retry helm repo add jetstack https://charts.jetstack.io
+# retry helm repo add jetstack https://charts.jetstack.io
 retry helm repo update
 
 # if [ ${USE_CUSTOMER_PROVIDED_CERTIFICATE} == "False" ]; then
@@ -142,7 +142,7 @@ fi
 # Installing metrics-server
 # retry kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.6.0/components.yaml
 
-retry helm upgrade -i loki grafana/loki-stack -n prophecy --create-namespace --set loki.isDefault=false --set loki.persistence.enabled=true,loki.persistence.storageClassName=default,loki.persistence.size=200Gi --force
+# retry helm upgrade -i loki grafana/loki-stack -n prophecy --create-namespace --set loki.isDefault=false --set loki.persistence.enabled=true,loki.persistence.storageClassName=default,loki.persistence.size=200Gi --force
 
 if [ ${USE_CUSTOMER_PROVIDED_CERTIFICATE} == "True" ]; then
   kubectl create secret tls prophecy-wildcard-tls-secret -n prophecy --cert=tls.crt --key=tls.key
@@ -181,9 +181,9 @@ fi
 # retry helm upgrade -i -n cp athena ./athena-0.1.0.tgz --set athena.tag=0.14.7 --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set prophecy.rootUrl=`echo prophecy.${ROOT_URL}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --force
 #retry helm upgrade -i prophecy --namespace prophecy prophecy/prophecy-marketplace --version 2.1.1 --set global.customer.name=`echo ${CUSTOMER_NAME}` --set serviceAccount.create=true --set cloud.provider=AZURE --set prophecy.userCount=`echo ${INITIAL_USER_COUNT}` --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set global.prophecy.rootUrl=`echo ${ROOT_URL}` --set prophecy.wildcardCertName=prophecy-wildcard-tls-secret --set version=2.2.7
 if [ ${USE_CUSTOMER_PROVIDED_CERTIFICATE} == "True" ]; then
-  retry helm --namespace prophecy upgrade -i prophecy-installer prophecy/prophecy-installer --version 3.3.4-0 --set version=3.3.4.0 --set global.prophecy.rootUrl=`echo ${ROOT_URL}` --set platform.ingress-nginx.controller.service.loadBalancerIP=`echo ${LOADBALANCER_IP}` --set platform.ingress-nginx.controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz --set global.customer.name=`echo ${CUSTOMER_NAME}` --set global.prophecy.wildcardCert.name==prophecy-wildcard-tls-secret --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set cloud.provider=AZURE --set athena.tag=billing --set global.prophecy.wildcardCert.useExternal=true --set athena.disableSharedVolumes=true --set athena.controlcenter.disabled=false
+  retry helm --namespace prophecy upgrade -i prophecy-installer prophecy/prophecy-installer --version 3.3.7-7 --set version=3.3.7.7 --set global.prophecy.rootUrl=`echo ${ROOT_URL}`  --set platform.loki.enabled=false --set platform.promtail.enabled=false --set platform.prometheusStandalone.enabled=false --set platform.elasticsearch.enabled=false --set platform.ingress-nginx.controller.service.loadBalancerIP=`echo ${LOADBALANCER_IP}` --set global.customer.name=`echo ${CUSTOMER_NAME}` --set global.prophecy.wildcardCert.name==prophecy-wildcard-tls-secret --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set cloud.provider=AZURE --set global.prophecy.wildcardCert.useExternal=true --set athena.disableSharedVolumes=true --set athena.controlcenter.disabled=false
 else
-  retry helm --namespace prophecy upgrade -i prophecy-installer prophecy/prophecy-installer --version 3.3.4-0 --set version=3.3.4.0 --set global.customer.name=`echo ${CUSTOMER_NAME}` --set global.customer.cluster=`echo ${CUSTOMER_NAME}` --set global.prophecy.rootUrl=`echo ${ROOT_URL}` --set platform.enabled=true --set athena.controlcenter.disabled=false --set platform.ingress-nginx.controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set cloud.provider=AZURE --set athena.tag=billing --set athena.disableSharedVolumes=true
+  retry helm --namespace prophecy upgrade -i prophecy-installer prophecy/prophecy-installer --version 3.3.7-7 --set version=3.3.7.7 --set global.customer.name=`echo ${CUSTOMER_NAME}` --set platform.loki.enabled=false --set platform.promtail.enabled=false --set platform.prometheusStandalone.enabled=false --set platform.elasticsearch.enabled=false --set global.customer.cluster=`echo ${CUSTOMER_NAME}` --set global.prophecy.rootUrl=`echo ${ROOT_URL}` --set platform.enabled=true --set athena.controlcenter.disabled=false --set athena.adminPassword=`echo ${ADMIN_PASSWORD}` --set cloud.provider=AZURE --set athena.disableSharedVolumes=true
 fi
 
 
